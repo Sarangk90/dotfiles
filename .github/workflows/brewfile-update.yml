@@ -1,0 +1,24 @@
+name: "Brewfile Update"
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+
+jobs:
+  update:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Homebrew
+        run: |
+          echo "$(/opt/homebrew/bin/brew shellenv)" >> $GITHUB_ENV
+          brew update
+      - name: Check Brewfile
+        run: brew bundle check --file=Brewfile
+      - name: Update Brewfile
+        run: brew bundle dump --force --file=Brewfile
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "chore: update Brewfile"
+          branch: main
