@@ -1,6 +1,6 @@
 # Brewfile: CLI & GUI packages
 
-tap "homebrew/core"
+# tap "homebrew/core"
 
 brew "git"
 brew "awscli"
@@ -10,9 +10,10 @@ brew "openjdk@17"
 brew "maven"
 brew "fzf"
 brew "docker"
-brew "kubectl"
+brew "kubernetes-cli"
 brew "jenv"
 brew "pyenv"
+brew "pyenv-virtualenv"
 brew "tfenv"
 brew "nvm"
 

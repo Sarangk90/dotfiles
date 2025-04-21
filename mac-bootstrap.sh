@@ -48,11 +48,19 @@ append 'eval "$(pyenv init --path)"; eval "$(pyenv init -)"'
 append 'export NVM_DIR="$HOME/.nvm"'
 append '[ -s "$(brew --prefix nvm)/nvm.sh" ] && . "$(brew --prefix nvm)/nvm.sh"'
 
+
 # 4. First-time env setup
-if ! pyenv versions | grep -q 3.12 && command -v pyenv &>/dev/null; then
-  pyenv install 3.12.3
-  pyenv global 3.12.3
-fi
+
+# install desired Python versions
+DESIRED_PYTHONS=(3.10.12 3.12.3)  # add/remove as needed
+for v in "${DESIRED_PYTHONS[@]}"; do
+  if ! pyenv versions --bare | grep -qx "$v"; then
+    echo ">Installing Python $v"
+    pyenv install "$v"
+  fi
+done
+pyenv global "${DESIRED_PYTHONS[@]}"
+
 if ! jenv versions | grep -q 17 && command -v jenv &>/dev/null; then
   jenv add /opt/homebrew/opt/openjdk@17
   jenv global 17
