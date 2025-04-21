@@ -14,6 +14,7 @@ brew "kubernetes-cli"
 brew "jenv"
 brew "pyenv"
 brew "pyenv-virtualenv"
+brew "pipx"
 brew "tfenv"
 brew "nvm"
 

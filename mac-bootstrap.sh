@@ -56,10 +56,28 @@ DESIRED_PYTHONS=(3.10.12 3.12.3)  # add/remove as needed
 for v in "${DESIRED_PYTHONS[@]}"; do
   if ! pyenv versions --bare | grep -qx "$v"; then
     echo ">Installing Python $v"
-    pyenv install "$v"
+    pyenv install --skip-existing "$v"
   fi
 done
 pyenv global "${DESIRED_PYTHONS[@]}"
+
+# Ensure pipx is on PATH
+append 'pipx ensurepath'
+
+# Helper to idempotently install a tool via pipx
+install_pipx() {
+  local pkg=$1
+  # pipx list prints lines like "  package poetry 2.x.x, installed using Python …"
+  if ! pipx list | grep -q "package $pkg "; then
+    echo "› Installing $pkg via pipx…"
+    pipx install "$pkg"
+  fi
+}
+
+# Install Poetry + common Python CLIs
+for pkg in poetry pre-commit black isort mypy; do
+  install_pipx "$pkg"
+done
 
 if ! jenv versions | grep -q 17 && command -v jenv &>/dev/null; then
   jenv add /opt/homebrew/opt/openjdk@17
