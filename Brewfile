@@ -24,6 +24,7 @@ cask "pycharm"
 cask "intellij-idea"
 cask "sublime-text"
 cask "docker"
+cask "zoom"
 cask "visual-studio-code"
 cask "font-meslo-lg-nerd-font"
 
