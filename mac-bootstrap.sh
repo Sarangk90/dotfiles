@@ -49,9 +49,12 @@ fi
 ###############################################################################
 # 3. zshrc helper snippets
 ###############################################################################
+
+
 append() { grep -qxF "$1" ~/.zshrc || echo "$1" >> ~/.zshrc; }
 
 append 'typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet'
+
 append 'autoload -Uz compinit && compinit'
 append 'export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"'
 append 'export PATH="$HOME/.jenv/bin:$PATH"'
@@ -64,6 +67,9 @@ append '[ -f "$(brew --prefix)/etc/profile.d/autojump.sh" ] && . "$(brew --prefi
 append 'source "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh"'
 append 'source "$(brew --prefix)/opt/fzf/shell/completion.zsh"'
 
+# ⇥ word-wise cursor motion (Option → / Option ←)
+append 'bindkey $'\''\e[1;3C'\'' forward-word'
+append 'bindkey $'\''\e[1;3D'\'' backward-word'
 ###############################################################################
 # 4. Python runtimes via pyenv
 ###############################################################################
