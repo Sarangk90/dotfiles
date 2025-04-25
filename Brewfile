@@ -1,15 +1,14 @@
-# Brewfile: CLI & GUI packages
-
-# tap "homebrew/core"
+# Brewfile — CLI & GUI packages
 
 brew "git"
-brew "awscli"
+brew "awscli"             # needs python@3.12
 brew "python@3.12"
 brew "node"
 brew "openjdk@17"
 brew "maven"
 brew "fzf"
-brew "docker"
+brew "docker"             # CLI only
+brew "colima" 
 brew "kubernetes-cli"
 brew "jenv"
 brew "pyenv"
@@ -23,7 +22,7 @@ cask "google-chrome"
 cask "pycharm"
 cask "intellij-idea"
 cask "sublime-text"
-cask "docker"
+cask "microsoft-teams"
 cask "zoom"
 cask "visual-studio-code"
 cask "font-meslo-lg-nerd-font"
