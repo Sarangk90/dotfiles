@@ -61,6 +61,8 @@ append 'eval "$(pyenv virtualenv-init -)"'
 append 'export NVM_DIR="$HOME/.nvm"'
 append '[ -s "$(brew --prefix nvm)/nvm.sh" ] && . "$(brew --prefix nvm)/nvm.sh"'
 append '[ -f "$(brew --prefix)/etc/profile.d/autojump.sh" ] && . "$(brew --prefix)/etc/profile.d/autojump.sh"'
+append 'source "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh"'
+append 'source "$(brew --prefix)/opt/fzf/shell/completion.zsh"'
 
 ###############################################################################
 # 4. Python runtimes via pyenv
