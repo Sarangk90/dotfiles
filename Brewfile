@@ -28,5 +28,6 @@ cask "zoom"
 cask "visual-studio-code"
 cask "font-meslo-lg-nerd-font"
 cask "windows-app"
+cask "maccy"
 
 # mas "Xcode", id: 497799835
