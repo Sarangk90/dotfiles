@@ -60,6 +60,7 @@ append 'eval "$(pyenv init --path)"; eval "$(pyenv init -)"'
 append 'eval "$(pyenv virtualenv-init -)"'
 append 'export NVM_DIR="$HOME/.nvm"'
 append '[ -s "$(brew --prefix nvm)/nvm.sh" ] && . "$(brew --prefix nvm)/nvm.sh"'
+append '[ -f "$(brew --prefix)/etc/profile.d/autojump.sh" ] && . "$(brew --prefix)/etc/profile.d/autojump.sh"'
 
 ###############################################################################
 # 4. Python runtimes via pyenv

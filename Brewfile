@@ -16,6 +16,7 @@ brew "pyenv-virtualenv"
 brew "pipx"
 brew "tfenv"
 brew "nvm"
+brew "autojump"
 
 cask "iterm2"
 cask "google-chrome"
