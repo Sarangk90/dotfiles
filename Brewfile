@@ -26,5 +26,6 @@ cask "microsoft-teams"
 cask "zoom"
 cask "visual-studio-code"
 cask "font-meslo-lg-nerd-font"
+cask "windows-app"
 
 # mas "Xcode", id: 497799835
