@@ -7,7 +7,9 @@ brew "node"
 brew "openjdk@17"
 brew "maven"
 brew "fzf"
-brew "docker"             # CLI only
+brew "yarn"              # ← Yarn package manager
+brew "docker"            # Docker CLI (Colima provides the daemon)
+brew "docker-compose"
 brew "colima" 
 brew "kubernetes-cli"
 brew "jenv"
@@ -28,6 +30,9 @@ cask "zoom"
 cask "visual-studio-code"
 cask "font-meslo-lg-nerd-font"
 cask "windows-app"
+cask "microsoft-word"
+cask "microsoft-excel"
+cask "microsoft-powerpoint"
 cask "maccy"
 
 # mas "Xcode", id: 497799835
