@@ -1,30 +1,42 @@
 #!/usr/bin/env bash
-# mac-bootstrap.sh — Mac dev-box bootstrap (Bash 3.2-compatible, idempotent)
+# mac-bootstrap.sh — Mac dev-box bootstrap (Bash 3.2-compatible, fully idempotent)
 set -euo pipefail
 
 ###############################################################################
-# 0. Homebrew on PATH and up to date
+# 0. Xcode Command-Line Tools & Homebrew installer
 ###############################################################################
+# 1) Xcode CLT (gives you git)
+if ! xcode-select -p &>/dev/null; then
+  echo "› Installing Xcode Command-Line Tools…"
+  xcode-select --install
+  until xcode-select -p &>/dev/null; do sleep 20; done
+fi
+
+# 2) Homebrew itself
+if ! command -v brew &>/dev/null; then
+  echo "› Installing Homebrew…"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+# 3) Put brew on PATH right away
 eval "$(/opt/homebrew/bin/brew shellenv)"
-echo "› Updating Homebrew …"
+echo "› Updating Homebrew…"
 brew update
 
-echo "› Installing / upgrading packages from Brewfile …"
+echo "› Installing / upgrading packages from Brewfile…"
 brew bundle --file="$(dirname "$0")/Brewfile"
 
 ###############################################################################
 # 1. Oh-My-Zsh + Powerlevel10k
 ###############################################################################
-echo "› Setting up Oh-My-Zsh & Powerlevel10k …"
-
+echo "› Setting up Oh-My-Zsh & Powerlevel10k…"
 if [[ ! -d ~/.oh-my-zsh ]]; then
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 fi
-
 THEME_DIR=~/.oh-my-zsh/custom/themes/powerlevel10k
 if [[ ! -d $THEME_DIR ]]; then
   git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$THEME_DIR"
-  sed -i '' 's/^ZSH_THEME=.*/ZSH_THEME="powerlevel10k\\/powerlevel10k"/' ~/.zshrc
+  sed -i '' 's/^ZSH_THEME=.*/ZSH_THEME="powerlevel10k\/powerlevel10k"/' ~/.zshrc
 fi
 
 ###############################################################################
@@ -32,10 +44,7 @@ fi
 ###############################################################################
 PLUGIN_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins"
 mkdir -p "$PLUGIN_DIR"
-
-clone_plugin() {
-  [[ -d "$PLUGIN_DIR/$2" ]] || git clone --depth=1 "$1" "$PLUGIN_DIR/$2"
-}
+clone_plugin() { [[ -d "$PLUGIN_DIR/$2" ]] || git clone --depth=1 "$1" "$PLUGIN_DIR/$2"; }
 clone_plugin https://github.com/zsh-users/zsh-autosuggestions     zsh-autosuggestions
 clone_plugin https://github.com/zsh-users/zsh-syntax-highlighting zsh-syntax-highlighting
 clone_plugin https://github.com/zsh-users/zsh-completions         zsh-completions
@@ -49,12 +58,9 @@ fi
 ###############################################################################
 # 3. zshrc helper snippets
 ###############################################################################
-
-
 append() { grep -qxF "$1" ~/.zshrc || echo "$1" >> ~/.zshrc; }
 
 append 'typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet'
-
 append 'autoload -Uz compinit && compinit'
 append 'export PATH="/opt/homebrew/opt/openjdk@17/bin:$PATH"'
 append 'export PATH="$HOME/.jenv/bin:$PATH"'
@@ -70,12 +76,13 @@ append 'source "$(brew --prefix)/opt/fzf/shell/completion.zsh"'
 # ⇥ word-wise cursor motion (Option → / Option ←)
 append 'bindkey $'\''\e[1;3C'\'' forward-word'
 append 'bindkey $'\''\e[1;3D'\'' backward-word'
+
 ###############################################################################
 # 4. Python runtimes via pyenv
 ###############################################################################
 DESIRED_PYTHONS=(3.10.12 3.12.3)
 for v in "${DESIRED_PYTHONS[@]}"; do
-  echo "› Ensuring Python $v via pyenv …"
+  echo "› Ensuring Python $v via pyenv…"
   pyenv install --skip-existing "$v"
 done
 pyenv global "${DESIRED_PYTHONS[@]}"
@@ -83,17 +90,16 @@ pyenv global "${DESIRED_PYTHONS[@]}"
 ###############################################################################
 # 5. pipx global CLIs
 ###############################################################################
-echo "› Configuring pipx path …"
+echo "› Configuring pipx path…"
 pipx ensurepath --force
 
 install_pipx_pkg() {
   local pkg=$1
   if ! pipx list | grep -q "package $pkg "; then
-    echo "› Installing $pkg via pipx …"
+    echo "› Installing $pkg via pipx…"
     pipx install "$pkg"
   fi
 }
-
 for pkg in poetry pre-commit black isort mypy; do
   install_pipx_pkg "$pkg"
 done
@@ -102,7 +108,7 @@ done
 # 6. jenv — register JDK 17 once
 ###############################################################################
 if command -v jenv &>/dev/null && ! jenv versions | grep -q 17; then
-  echo "› Registering OpenJDK 17 with jenv …"
+  echo "› Registering OpenJDK 17 with jenv…"
   jenv add /opt/homebrew/opt/openjdk@17
   jenv global 17
 fi
@@ -115,7 +121,7 @@ if [[ -d "$(brew --prefix)/opt/fzf" ]]; then
 fi
 
 ###############################################################################
-# 8. Meslo Nerd Font for Powerlevel10k
+# 8. Meslo Nerd Font for p10k
 ###############################################################################
 if ! fc-list | grep -q "MesloLGS NF"; then
   brew install --cask font-meslo-lg-nerd-font
@@ -124,24 +130,24 @@ fi
 ###############################################################################
 # 9. Vim/Neovim mouse support
 ###############################################################################
-VIMRC="$HOME/.vimrc"
-touch "$VIMRC"
+VIMRC="$HOME/.vimrc"; touch "$VIMRC"
 for line in "set mouse=a" "set ttymouse=sgr" "set ttyfast"; do
   grep -qxF "$line" "$VIMRC" || echo "$line" >> "$VIMRC"
 done
 
 ###############################################################################
-# 10. Colima 
+# 10. Colima (Docker runtime)
 ###############################################################################
 if command -v colima &>/dev/null; then
   if ! colima status &>/dev/null; then
-    echo "› Starting Colima (Docker runtime) …"
+    echo "› Starting Colima…"
     colima start
   else
     echo "↪ Colima already running, skipping"
   fi
 fi
+
 ###############################################################################
 # Done
 ###############################################################################
-echo -e "\\n✅  Bootstrap complete!  Open a new terminal or run:  source ~/.zshrc"
+echo -e "\n✅ Bootstrap complete!  Open a new terminal or run:  source ~/.zshrc"

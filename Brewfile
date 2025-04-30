@@ -19,6 +19,7 @@ brew "pipx"
 brew "tfenv"
 brew "nvm"
 brew "autojump"
+brew "tig"
 
 cask "iterm2"
 cask "google-chrome"
@@ -34,5 +35,9 @@ cask "microsoft-word"
 cask "microsoft-excel"
 cask "microsoft-powerpoint"
 cask "maccy"
+cask "omnifocus"
+cask "chatgpt"
+cask "1password"
+cask "1password-cli"
 
 # mas "Xcode", id: 497799835
