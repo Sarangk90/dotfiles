@@ -80,12 +80,12 @@ append 'bindkey $'\''\e[1;3D'\'' backward-word'
 ###############################################################################
 # 4. Python runtimes via pyenv
 ###############################################################################
-DESIRED_PYTHONS=(3.10.12 3.12.3)
-for v in "${DESIRED_PYTHONS[@]}"; do
-  echo "› Ensuring Python $v via pyenv…"
-  pyenv install --skip-existing "$v"
-done
-pyenv global "${DESIRED_PYTHONS[@]}"
+# DESIRED_PYTHONS=(3.10.12 3.12.3)
+# for v in "${DESIRED_PYTHONS[@]}"; do
+#   echo "› Ensuring Python $v via pyenv…"
+#   pyenv install --skip-existing "$v"
+# done
+# pyenv global "${DESIRED_PYTHONS[@]}"
 
 ###############################################################################
 # 5. pipx global CLIs
@@ -100,7 +100,7 @@ install_pipx_pkg() {
     pipx install "$pkg"
   fi
 }
-for pkg in poetry pre-commit black isort mypy; do
+for pkg in poetry pre-commit black isort mypy uv; do
   install_pipx_pkg "$pkg"
 done
 
