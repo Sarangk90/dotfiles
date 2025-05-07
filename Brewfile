@@ -44,5 +44,6 @@ cask "maccy"
 cask "omnifocus"
 cask "ollama"
 cask "todoist"
+cask "windsurf"
 
 # mas "Xcode", id: 497799835
